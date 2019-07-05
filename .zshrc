@@ -68,7 +68,8 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(docker osx git ansible wd battery zsh-syntax-highlighting zsh-autosuggestions bgnotify)
+plugins=(docker osx git ansible wd battery colorize zsh-syntax-highlighting zsh-autosuggestions bgnotify)
+#plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -107,12 +108,15 @@ alias hst='history | grep -i '
 alias -g G='| grep -i'
 alias -s {yml,yaml}=subl
 alias -s {txt,md,cfg}=subl
+
 DISABLE_AUTO_TITLE="true"
-tt () {
-    echo -e "\033];$@\007"
-}
+# tt () {
+#     echo -e "\033];$@\007"
+# }
+
+
 
 echo -e "\033];HomeDir\007"
-prompt_context() {} 
+# prompt_context() {} 
 #RPROMPT="[%D{%y/%m/%f}|%@]"
 

@@ -314,7 +314,7 @@ build_rprompt() {
 
 prompt_time() {
   prompt_segment_right blue black '%D{%d-%b-%Y-%a-%H:%M:%S}'
-  prompt_segment_right default default $(battery_pct_prompt) 
+  # prompt_segment_right default default $(battery_pct_prompt) 
   
 }
 
@@ -323,8 +323,8 @@ build_prompt() {
   RETVAL=$?
   prompt_status
   prompt_virtualenv
-  prompt_aws
-  prompt_context
+  # prompt_aws
+  # prompt_context
   prompt_dir
   prompt_git
   prompt_bzr
