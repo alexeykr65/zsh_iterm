@@ -95,12 +95,18 @@ source $ZSH/oh-my-zsh.sh
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+alias zshconfig="subl ~/.zshrc"
+alias ohmyzsh="subl ~/.oh-my-zsh"
 autoload -Uz compinit; compinit
 alias l='colorls --group-directories-first --almost-all'
 alias ll='colorls --group-directories-first --almost-all --long' # detailed list view
+alias tbc='tabset --color'
+alias tbcs='tabset --colors'
+alias tbr='tabset --color random'
+alias hst='history | grep -i '
+alias -g G='| grep -i'
 alias -s {yml,yaml}=subl
+alias -s {txt,md,cfg}=subl
 DISABLE_AUTO_TITLE="true"
 tt () {
     echo -e "\033];$@\007"

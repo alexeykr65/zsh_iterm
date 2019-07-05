@@ -152,9 +152,11 @@ wd_warp()
 		then
 			cd ${points[$point]/#\~/$HOME}/$sub
 			echo -e "\033];$point\007"
+			tabset --color random
 		else
 			cd ${points[$point]/#\~/$HOME}
 			echo -e "\033];$point\007"
+			tabset --color random
 		fi
 	else
 		wd_exit_fail "Unknown warp point '${point}'"
