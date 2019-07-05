@@ -1,6 +1,12 @@
-wd
+Modified plugin WD
 ==
+It's my changed of plugin wd
+Src plugin:  [Source WD](https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/wd)
+I added change name title in iterm2 when change directory
+Example:
+wd docker - change dir to docker and change title to 'docker'
 
+## Original Information
 [![Build Status](https://travis-ci.org/mfaerevaag/wd.png?branch=master)](https://travis-ci.org/mfaerevaag/wd)
 
 `wd` (*warp directory*) lets you jump to custom directories in zsh, without using `cd`. Why? Because `cd` seems inefficient when the folder is frequently visited or has a long path.
