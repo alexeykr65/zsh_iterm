@@ -1,7 +1,7 @@
 Modified plugin WD
 ==
 It's my changed of plugin wd
-Src plugin:  [Source WD](https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/wd)
+Source plugin:  [Source WD](https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/wd)
 I added change name title in iterm2 when change directory
 Example:
 wd docker - change dir to docker and change title to 'docker'
