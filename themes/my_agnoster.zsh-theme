@@ -237,7 +237,7 @@ prompt_aws() {
   esac
 }
 # My add to themes
-SEGMENT_SEPARATOR_RIGHT='\ue0b2'
+SEGMENT_SEPARATOR_RIGHT=$'\ue0b2'
 ZSH_THEME_GIT_TIME_SINCE_COMMIT_SHORT="%{$fg[green]%}"
 ZSH_THEME_GIT_TIME_SHORT_COMMIT_MEDIUM="%{$fg[yellow]%}"
 ZSH_THEME_GIT_TIME_SINCE_COMMIT_LONG="%{$fg[red]%}"
@@ -314,7 +314,7 @@ build_rprompt() {
 
 prompt_time() {
   prompt_segment_right blue black '%D{%d-%b-%Y-%a-%H:%M:%S}'
-  # prompt_segment_right default default $(battery_pct_prompt) 
+  prompt_segment_right black yellow "$(battery_pct_prompt) "
   
 }
 
