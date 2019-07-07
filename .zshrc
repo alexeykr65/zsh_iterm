@@ -101,9 +101,10 @@ alias ohmyzsh="subl ~/.oh-my-zsh"
 autoload -Uz compinit; compinit
 alias l='colorls --group-directories-first --almost-all'
 alias ll='colorls --group-directories-first --almost-all --long' # detailed list view
+alias lt='colorls --tree' # detailed list view
 alias tbc='tabset --color'
 alias tbcs='tabset --colors'
-alias tbr='tabset --color random'
+alias tbr='tabset --color random '
 alias tbt='tabset --title '
 alias tba='tabset --title $(basename $(pwd))'
 #alias tba='tabset --title $(pwd | awk -F/ \'{print $NF}\')'
