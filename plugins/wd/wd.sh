@@ -151,7 +151,7 @@ wd_warp()
 		if [[ $sub != "" ]]
 		then
 			cd ${points[$point]/#\~/$HOME}/$sub
-			echo -e "\033];$point\007"
+			echo -e "\033];$point/$sub\007"
 			tabset --color random
 		else
 			cd ${points[$point]/#\~/$HOME}

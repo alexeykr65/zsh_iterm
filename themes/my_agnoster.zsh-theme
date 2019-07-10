@@ -33,6 +33,11 @@
 # A few utility functions to make it easy and re-usable to draw segmented prompts
 
 CURRENT_BG='NONE'
+MULTILINE_FIRST_PROMPT_PREFIX=$'\u256D'$'\U2500'     
+MULTILINE_NEWLINE_PROMPT_PREFIX=$'\u251C'$'\U2500'   
+MULTILINE_LAST_PROMPT_PREFIX=$'\u2570'$'\U2500'$'\uF179'' '$'\u2192'
+RPROMPT_PREFIX='%{'$'\e[1A''%}' # one line up
+RPROMPT_SUFFIX='%{'$'\e[1B''%}' # one line down
 
 case ${SOLARIZED_THEME:-dark} in
     light) CURRENT_FG='white';;
@@ -199,7 +204,7 @@ prompt_hg() {
 # Dir: current working directory
 prompt_dir() {
   # prompt_segment blue $CURRENT_FG '%~'
-  prompt_segment blue $CURRENT_FG '%2~'
+  prompt_segment blue $CURRENT_FG '%3~'
 }
 
 # Virtualenv: current working virtualenv
@@ -317,6 +322,15 @@ prompt_time() {
   prompt_segment_right black yellow "$(battery_pct_prompt) "
   
 }
+prompt_docker_host() {
+  [[ "$compose_exists" == true || -f Dockerfile || -f docker-compose.yml || -f /.dockerenv ]] || return
+  local docker_version=$(docker version -f "{{.Server.Version}}" 2>/dev/null)
+  [[ -z $docker_version ]] && return
+  SPACESHIP_DOCKER_SYMBOL="${SPACESHIP_DOCKER_SYMBOL="🐳 "}"
+  # SPACESHIP_DOCKER_SYMBOL=$'\uf308'
+  prompt_segment red black "${SPACESHIP_DOCKER_SYMBOL}v${docker_version}"
+
+}
 
 ## Main prompt
 build_prompt() {
@@ -329,8 +343,10 @@ build_prompt() {
   prompt_git
   prompt_bzr
   prompt_hg
+  prompt_docker_host
   prompt_end
 }
 
-PROMPT='%{%f%b%k%}$(build_prompt) '
-RPROMPT='%{%f%b%k%}$(git_time_since_commit)$(build_rprompt)'
+PROMPT='$MULTILINE_FIRST_PROMPT_PREFIX%{%f%b%k%}$(build_prompt) 
+$MULTILINE_LAST_PROMPT_PREFIX'
+RPROMPT='$RPROMPT_PREFIX%{%f%b%k%}$(git_time_since_commit)$(build_rprompt)$RPROMPT_SUFFIX'

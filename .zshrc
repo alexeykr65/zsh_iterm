@@ -9,6 +9,8 @@ export ZSH="/Users/alex/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="my_agnoster"
+HISTSIZE=9999
+SAVEHIST=9999
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -68,7 +70,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(docker osx git ansible wd battery colorize zsh-syntax-highlighting zsh-autosuggestions bgnotify)
+plugins=(docker osx git ansible wd battery colorize zsh-syntax-highlighting zsh-autosuggestions bgnotify zsh-apple-touchbar history)
 #plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
@@ -118,9 +120,13 @@ DISABLE_AUTO_TITLE="true"
 #     echo -e "\033];$@\007"
 # }
 
+[[ -f ~/.zsh_functions ]] && source ~/.zsh_functions
 
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
 
 echo -e "\033];HomeDir\007"
-# prompt_context() {} 
-#RPROMPT="[%D{%y/%m/%f}|%@]"
 
