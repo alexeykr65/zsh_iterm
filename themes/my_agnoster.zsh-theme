@@ -35,9 +35,18 @@
 CURRENT_BG='NONE'
 MULTILINE_FIRST_PROMPT_PREFIX=$'\u256D'$'\U2500'     
 MULTILINE_NEWLINE_PROMPT_PREFIX=$'\u251C'$'\U2500'   
-MULTILINE_LAST_PROMPT_PREFIX=$'\u2570'$'\U2500'$'\uF179'' '$'\u2192'
-RPROMPT_PREFIX='%{'$'\e[1A''%}' # one line up
-RPROMPT_SUFFIX='%{'$'\e[1B''%}' # one line down
+#MULTILINE_LAST_PROMPT_PREFIX=$'\u2570'$'\U2500'$'\uF179'' '$'\uf178'' '
+MULTILINE_LAST_PROMPT_PREFIX=$'\u2570'$'\U2500'$'\uF460'$'\uF460'$'\uF460'
+APPLE_ICON=$'\uF179'
+# MULTILINE_LAST_PROMPT_PREFIX="%F{014}\u2570%F{cyan}\uF460%F{073}\uF460%F{109}\uF460%f "
+#$'\u2192'
+RPROMPT_PREFIX='%{'$'\e[1A''%}' # one line up for RPROMPT
+RPROMPT_SUFFIX='%{'$'\e[1B''%}' # one line down for RPROMPT
+DATE_ICON=$'\uF073 '             # 
+TIME_ICON=$'\uF017 '             # 
+RAM_ICON=$'\uF0E4'              # 
+LOAD_ICON=$'\uF080 '             # 
+DISK_ICON=$'\uF0A0 '             # 
 
 case ${SOLARIZED_THEME:-dark} in
     light) CURRENT_FG='white';;
@@ -59,6 +68,9 @@ esac
   # escape sequence with a single literal character.
   # Do not change this! Do not make it '\u2b80'; that is the old, wrong code point.
   SEGMENT_SEPARATOR=$'\ue0b0'
+  #SEGMENT_SEPARATOR=$'\uE0B4'
+  SEGMENT_SEPARATOR_RIGHT=$'\ue0b2'
+  #SEGMENT_SEPARATOR_RIGHT=$'\uE0B6'
 }
 
 # Begin a segment
@@ -241,12 +253,160 @@ prompt_aws() {
     *) prompt_segment green black "AWS: $AWS_PROFILE" ;;
   esac
 }
-# My add to themes
-SEGMENT_SEPARATOR_RIGHT=$'\ue0b2'
+
+########################################################################
+# My add to Agnoster theme
+########################################################################
+
+
 ZSH_THEME_GIT_TIME_SINCE_COMMIT_SHORT="%{$fg[green]%}"
 ZSH_THEME_GIT_TIME_SHORT_COMMIT_MEDIUM="%{$fg[yellow]%}"
 ZSH_THEME_GIT_TIME_SINCE_COMMIT_LONG="%{$fg[red]%}"
 ZSH_THEME_GIT_TIME_SINCE_COMMIT_NEUTRAL="%{$fg[cyan]%}"
+
+prompt_apple() {
+  prompt_segment black white "$APPLE_ICON"
+  
+}
+
+printSizeHumanReadable() {
+  typeset -F 2 size
+  size="$1"+0.00001
+  local extension
+  extension=('B' 'K' 'M' 'G' 'T' 'P' 'E' 'Z' 'Y')
+  local index=1
+
+  # if the base is not Bytes
+  if [[ -n $2 ]]; then
+    local idx
+    for idx in "${extension[@]}"; do
+      if [[ "$2" == "$idx" ]]; then
+        break
+      fi
+      index=$(( index + 1 ))
+    done
+  fi
+
+  while (( (size / 1024) > 0.1 )); do
+    size=$(( size / 1024 ))
+    index=$(( index + 1 ))
+  done
+
+  echo "$size${extension[$index]}"
+}
+
+################################################################
+# Segment that indicates usage level of current partition.
+POWERLEVEL9K_DISK_USAGE_ONLY_WARNING=false
+POWERLEVEL9K_DISK_USAGE_WARNING_LEVEL=85
+POWERLEVEL9K_DISK_USAGE_CRITICAL_LEVEL=90
+
+prompt_disk_usage() {
+  local current_state="unknown"
+  typeset -AH hdd_usage_forecolors
+  hdd_usage_forecolors=(
+    'normal'        'black'
+    'warning'       "red"
+    'critical'      'white'
+  )
+  typeset -AH hdd_usage_backcolors
+  hdd_usage_backcolors=(
+    'normal'        'yellow'
+    'warning'       'yellow'
+    'critical'      'red'
+  )
+
+  local disk_usage="${$(\df -P . | sed -n '2p' | awk '{ print $5 }')%%\%}"
+
+  if [ "$disk_usage" -ge "$POWERLEVEL9K_DISK_USAGE_WARNING_LEVEL" ]; then
+    current_state='warning'
+    if [ "$disk_usage" -ge "$POWERLEVEL9K_DISK_USAGE_CRITICAL_LEVEL" ]; then
+        current_state='critical'
+    fi
+  else
+    if [[ "$POWERLEVEL9K_DISK_USAGE_ONLY_WARNING" == true ]]; then
+        current_state=''
+        return
+    fi
+    current_state='normal'
+  fi
+
+  local message="${disk_usage}%%"
+
+  # Draw the prompt_segment
+  if [[ -n $disk_usage ]]; then
+    prompt_segment_right ${hdd_usage_backcolors[$current_state]} ${hdd_usage_forecolors[$current_state]} "$message $DISK_ICON "
+    # "$1_prompt_segment" "${0}_${current_state}" "$2" "${hdd_usage_backcolors[$current_state]}" "${hdd_usage_forecolors[$current_state]}" "$message" 'DISK_ICON'
+  fi
+}
+
+
+################################################################
+# Segment to display free RAM and used Swap
+prompt_load() {
+  OS='OSX'
+  #local ROOT_PREFIX="${4}"
+  # The load segment can have three different states
+  local current_state="unknown"
+  local load_select=2
+  local load_avg
+  local cores
+
+  typeset -AH load_states
+  load_states=(
+    'critical'      'red'
+    'warning'       'yellow'
+    'normal'        'green'
+  )
+  load_select=3
+
+  case "$OS" in
+    OSX|BSD)
+      load_avg=$(sysctl vm.loadavg | grep -o -E '[0-9]+(\.|,)[0-9]+' | sed -n ${load_select}p)
+      if [[ "$OS" == "OSX" ]]; then
+        cores=$(sysctl -n hw.logicalcpu)
+      else
+        cores=$(sysctl -n hw.ncpu)
+      fi
+      ;;
+    *)
+      load_avg=$(cut -d" " -f${load_select} /proc/loadavg)
+      cores=$(nproc)
+  esac
+
+  # Replace comma
+  load_avg=${load_avg//,/.}
+
+  if [[ "$load_avg" -gt $((${cores} * 0.7)) ]]; then
+    current_state="critical"
+  elif [[ "$load_avg" -gt $((${cores} * 0.5)) ]]; then
+    current_state="warning"
+  else
+    current_state="normal"
+  fi
+  prompt_segment_right yellow black "$load_avg $LOAD_ICON "
+  # "$1_prompt_segment" "${0}_${current_state}" "$2" "${load_states[$current_state]}" "$DEFAULT_COLOR" "$load_avg" 'LOAD_ICON'
+}
+
+
+# prompt_segment yellow black "$RAM_ICON $(printSizeHumanReadable "$ramfree" $base)"
+
+zsh_wifi_signal(){
+  local output=$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I)
+  local airport=$(echo $output | grep 'AirPort' | awk -F': ' '{print $2}')
+  if [ "$airport" = "Off" ]; then
+          local color='%F{black}'
+          echo -n "%{$color%}Wifi Off"
+  else
+          local ssid=$(echo $output | grep ' SSID' | awk -F': ' '{print $2}')
+          local speed=$(echo $output | grep 'lastTxRate' | awk -F': ' '{print $2}')
+          local color='%F{black}'
+          [[ $speed -gt 100 ]] && color='%F{black}'
+          [[ $speed -lt 50 ]] && color='%F{red}'
+          echo -n "%{$color%}$speed Mbps \uf1eb%{%f%}" # removed char not in my PowerLine font
+  fi
+}
+
 
 # Determine the time since last commit. If branch is clean,
 # use a neutral color, otherwise colors will vary according to time.
@@ -291,19 +451,6 @@ function git_time_since_commit() {
     fi
 }
 
-# Add my extended
-
-prompt_newline() {
-  if [[ -n $CURRENT_BG ]]; then
-    echo -n "%{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR %{%k%F{blue}%}$SEGMENT_SEPARATOR"
-  else
-    echo -n "%{%k%}"
-  fi
-
-  echo -n "%{%f%}"
-  CURRENT_BG=''
-}
-
 prompt_segment_right() {
   local bg fg
   [[ -n $1 ]] && bg="%K{$1}" || bg="%k"
@@ -313,15 +460,26 @@ prompt_segment_right() {
   [[ -n $3 ]] && echo -n $3
 }
 
+prompt_battery() {
+  # prompt_segment_right black yellow "$(prompt_disk_usage) "
+  prompt_segment_right black yellow "$(battery_pct_prompt) "
+
+}
+
 build_rprompt() {
   prompt_time
+  prompt_load
+  prompt_disk_usage
+  prompt_battery
+
 }
 
 prompt_time() {
-  prompt_segment_right blue black '%D{%d-%b-%Y-%a-%H:%M:%S}'
-  prompt_segment_right black yellow "$(battery_pct_prompt) "
-  
+  prompt_segment_right blue black "$DATE_ICON%D{%d-%b-%Y} $TIME_ICON%D{%H:%M:%S} "
+  prompt_segment_right white black "$(zsh_wifi_signal)  "
+ 
 }
+
 prompt_docker_host() {
   [[ "$compose_exists" == true || -f Dockerfile || -f docker-compose.yml || -f /.dockerenv ]] || return
   local docker_version=$(docker version -f "{{.Server.Version}}" 2>/dev/null)
@@ -336,9 +494,10 @@ prompt_docker_host() {
 build_prompt() {
   RETVAL=$?
   prompt_status
+  prompt_apple
   prompt_virtualenv
   # prompt_aws
-  # prompt_context
+  
   prompt_dir
   prompt_git
   prompt_bzr

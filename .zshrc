@@ -114,6 +114,10 @@ alias hst='history | grep -i '
 alias -g G='| grep -i'
 alias -s {yml,yaml}=subl
 alias -s {txt,md,cfg}=subl
+alias ports="sudo lsof -PiTCP -sTCP:LISTEN"
+alias speedtest="wget -O /dev/null cachefly.cachefly.net/100mb.test"
+alias search="grep --color -rni ./ -e "
+alias down="cd ~/Downloads"
 
 DISABLE_AUTO_TITLE="true"
 # tt () {

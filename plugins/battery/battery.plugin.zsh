@@ -46,7 +46,8 @@ if [[ "$OSTYPE" = darwin* ]] ; then
 
   function battery_pct_prompt () {
     POWER_ON='' #$'\uf1e6'
-    POWER_OFF=''  # $'\uf127'
+    #POWER_OFF=''  # $'\uf127'
+    POWER_OFF=''  # $'\uf581'
     if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
       b=$(battery_pct_remaining)
       if [ $b -gt 50 ] ; then
@@ -56,9 +57,9 @@ if [[ "$OSTYPE" = darwin* ]] ; then
       else
         color='red'
       fi
-      echo "%{$fg[$color]%}$POWER_OFF [$(battery_pct_remaining)%%]%{$reset_color%}"
+      echo "%{$fg[$color]%}$POWER_OFF $(battery_pct_remaining)%%%{$reset_color%}"
     else
-      echo "%{$fg[$color]%}$POWER_ON [100%%]%{$reset_color%}"
+      echo "%{$fg[$color]%}$POWER_ON 100%%%{$reset_color%}"
     fi
   }
 
