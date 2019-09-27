@@ -70,7 +70,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(docker osx git ansible wd battery colorize zsh-syntax-highlighting zsh-autosuggestions bgnotify zsh-apple-touchbar history)
+plugins=(zsh-autosuggestions docker osx git ansible wd battery colorize zsh-syntax-highlighting bgnotify zsh-apple-touchbar history colored-man-pages)
 #plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
@@ -119,6 +119,14 @@ alias speedtest="wget -O /dev/null cachefly.cachefly.net/100mb.test"
 alias search="grep --color -rni ./ -e "
 alias down="cd ~/Downloads"
 
+alias di='docker images'
+alias dcn='docker container'
+alias dr='docker run'
+alias drr='docker run --rm '
+alias drit='docker run -it'
+alias dco='docker-compose'
+
+alias apl='ansible-playbook'
 DISABLE_AUTO_TITLE="true"
 # tt () {
 #     echo -e "\033];$@\007"
@@ -131,6 +139,7 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
 setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
 
 echo -e "\033];HomeDir\007"
 
