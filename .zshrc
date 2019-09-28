@@ -70,7 +70,24 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(zsh-autosuggestions docker osx git ansible wd battery colorize zsh-syntax-highlighting bgnotify zsh-apple-touchbar history colored-man-pages)
+plugins=(
+  zsh-autosuggestions 
+  docker 
+  osx 
+  git 
+  ansible 
+  wd 
+  battery 
+  colorize 
+  bgnotify 
+  zsh-apple-touchbar 
+  web-search
+  sudo
+  history 
+  colored-man-pages
+  extract
+  zsh-syntax-highlighting 
+  )
 #plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
@@ -118,6 +135,11 @@ alias ports="sudo lsof -PiTCP -sTCP:LISTEN"
 alias speedtest="wget -O /dev/null cachefly.cachefly.net/100mb.test"
 alias search="grep --color -rni ./ -e "
 alias down="cd ~/Downloads"
+alias deleteDSFiles="find . -name '.DS_Store' -type f -delete"
+alias flushdns="sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder"
+alias myip="curl http://ipecho.net/plain; echo"
+alias runp="lsof -i "
+alias usage='du -h -d1'
 
 alias di='docker images'
 alias dcn='docker container'
@@ -126,7 +148,11 @@ alias drr='docker run --rm '
 alias drit='docker run -it'
 alias dco='docker-compose'
 
+alias ga='git add .'
+alias gac='git add . && git commit -a -m '
+
 alias apl='ansible-playbook'
+alias update='source ~/.zshrc'
 DISABLE_AUTO_TITLE="true"
 # tt () {
 #     echo -e "\033];$@\007"
